@@ -14,6 +14,7 @@
 		<form id="main_form" class="appnitro"  method="post" action="">
 			<div class="form_description">
 			<h2>长郡查分 - 高考查分助手</h2>
+			<p>此助手通过分发查询任务到服务器集群，并使用自动识别、填写招生信息港的查询验证码的模拟请求操作来达到协助查分的目的。</p>
 		  </div>	
 
 			<div style="display: none" id="resDiv">
@@ -44,7 +45,7 @@
 				</div> 
 				</li>
 				<li class="buttons">
-					<button id="saveForm" class="button_text" onclick="return false;" disabled="disabled">Submit</button>
+					<button id="saveForm" class="button_text" onclick="return false;">Submit</button>
 				</li>
 			</ul>
 		</form>	
@@ -54,4 +55,32 @@
 	</div>
 	<img id="bottom" src="bottom.png" alt="">
 	</body>
+	<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+	<script>
+		$("#saveForm").click( function() {
+			$.ajax({
+			    url: 'http://2019-cee.changjunese.com:8080/getResult',
+			    type: 'post',
+			    data: {"ksh":$("#ksh").val(),"sfzsix":$("#sfzsix").val()},
+			    success: function( data, textStatus, jQxhr ){
+			    	data = JSON.parse(data)
+		        	if (data.status == 0)
+					{
+						alert('未找到您的准考证号/身份证后 6 位组合. 请检查无误后再次尝试, 谢谢.');
+						return true;
+					}
+					if (data.status == 1)
+					{
+						$("#inputBox").hide();
+						$("#resDiv").show();
+						$("#result").append(data.html);
+						return true;
+					}
+			    },
+			    error: function( jqXhr, textStatus, errorThrown ){
+			        console.log( errorThrown );
+			    }
+			});
+		})
+	</script>
 </html>
